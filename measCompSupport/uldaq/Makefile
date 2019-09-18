@@ -4,20 +4,13 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
-# Note, the following files were manually copied from the Measurement Computing/DAQ/C directory.
-INC += cbw.h
-
-ifeq (win32-x86, $(findstring win32-x86, $(T_A)))
-LIB_INSTALLS += ../os/win32-x86/cbw32.lib
-
-else ifeq (windows-x64, $(findstring windows-x64, $(T_A)))
-LIB_INSTALLS += ../os/windows-x64/cbw64.lib
-
-else
 LIBRARY_IOC = uldaq
-ULDAQ = $(TOP)/measCompSupport/uldaq
 
-SRC_DIRS += ${ULDAQ}
+ULDAQ = $(TOP)/uldaq
+
+USR_CXXFLAGS += -I/opt/local/include
+
+INC += uldaq.h
 uldaq_SRCS += AiDevice.cpp
 uldaq_SRCS += IoDevice.cpp
 uldaq_SRCS += DevMemInfo.cpp
@@ -50,6 +43,9 @@ uldaq_SRCS += main.cpp
 uldaq_SRCS += DaqDeviceInfo.cpp
 uldaq_SRCS += DaqDeviceConfig.cpp
 
+SRC_DIRS += ${ULDAQ}/interfaces
+
+
 SRC_DIRS += ${ULDAQ}/usb
 uldaq_SRCS += Usb1208hs.cpp
 uldaq_SRCS += UsbIotech.cpp
@@ -77,6 +73,9 @@ uldaq_SRCS += CtrUsbCtrx.cpp
 uldaq_SRCS += CtrUsb1808.cpp
 uldaq_SRCS += CtrUsb1208hs.cpp
 uldaq_SRCS += CtrUsbBase.cpp
+uldaq_SRCS += CtrHidBase.cpp
+uldaq_SRCS += CtrUsbDio24.cpp
+uldaq_SRCS += CtrHid.cpp
 
 SRC_DIRS += ${ULDAQ}/usb/daqi
 uldaq_SRCS += DaqIUsbCtrx.cpp
@@ -163,11 +162,6 @@ uldaq_SRCS += DioUsbSsrxx.cpp
 uldaq_SRCS += DioUsbDio96h.cpp
 uldaq_SRCS += DioUsbPdiso8.cpp
 
-SRC_DIRS += ${ULDAQ}/hid/ctr
-uldaq_SRCS += CtrHidBase.cpp
-uldaq_SRCS += CtrUsbDio24.cpp
-uldaq_SRCS += CtrHid.cpp
-
 SRC_DIRS += ${ULDAQ}/utility
 uldaq_SRCS += FnLog.cpp
 uldaq_SRCS += ErrorMap.cpp
@@ -177,11 +171,8 @@ uldaq_SRCS += UlLock.cpp
 uldaq_SRCS += SuspendMonitor.cpp
 uldaq_SRCS += Nist.cpp
 uldaq_SRCS += ThreadEvent.cpp
-endif
-
 #=============================
 
 include $(TOP)/configure/RULES
 #----------------------------------------
 #  ADD RULES AFTER THIS LINE
-
