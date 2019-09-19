@@ -535,4 +535,14 @@ int cbTIn(int BoardNum, int Chan, int Scale, float *TempValue, int Options)
 int cbSetTrigger(int BoardNum, int TrigType, USHORT LowThreshold,
                  USHORT HighThreshold)
 {
+    uldaq::TriggerType trigType = uldaq::TRIG_NONE;
+    switch (TrigType) {
+    case RISING_EDGE:  trigType = uldaq::TriggerType(1<<0); break;
+    case FALLING_EDGE: trigType = uldaq::TriggerType(1<<1); break;
+    case HIGH_LEVEL:   trigType = uldaq::TriggerType(1<<2); break;
+    case LOW_LEVEL:    trigType = uldaq::TriggerType(1<<3); break;
+    }
+    /* which */
+    printf("cbSetTrigger is not implemented\n");
+    return uldaq::ERR_NO_ERROR;
 }
