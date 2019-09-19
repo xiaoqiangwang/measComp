@@ -210,35 +210,116 @@ int cbGetIOStatus(int BoardNum, short *Status, long *CurCount, long *CurIndex,in
       
 int cbAIn(int BoardNum, int Chan, int Gain, USHORT *DataValue)
 {
-    return uldaq::ERR_NO_ERROR;
+    uldaq::UlError status = uldaq::ERR_NO_ERROR;
+    uldaq::AInFlag flags = uldaq::AInFlag(uldaq::AIN_FF_NOSCALEDATA|uldaq::AIN_FF_NOCALIBRATEDATA);
+    double data = 0;
+    status = ulAIn(BoardNum, Chan,
+            uldaq::AI_DIFFERENTIAL,
+            cbw_uldaq_range(Gain),
+            flags, &data);
+    *DataValue = data;
+
+    return status;
 }
 
 int cbAIn32(int BoardNum, int Chan, int Gain, ULONG *DataValue, int Options)
 {
-    return uldaq::ERR_NO_ERROR;
+    uldaq::UlError status = uldaq::ERR_NO_ERROR;
+    uldaq::AInFlag flags = uldaq::AInFlag(uldaq::AIN_FF_NOSCALEDATA|uldaq::AIN_FF_NOCALIBRATEDATA);
+    double data = 0;
+    status = ulAIn(BoardNum, Chan,
+            uldaq::AI_DIFFERENTIAL,
+            cbw_uldaq_range(Gain),
+            flags, &data);
+    *DataValue = data;
+
+    return status;
 }
 
 int cbAInScan(int BoardNum, int LowChan, int HighChan, long Count,
               long *Rate, int Gain, HGLOBAL MemHandle, int Options)
 {
-    return uldaq::ERR_NO_ERROR;
+    uldaq::UlError status = uldaq::ERR_NO_ERROR;
+    ULONG flags = uldaq::AINSCAN_FF_NOCALIBRATEDATA;
+    ULONG options = 0;
+    double rate = 0;
+
+    if (!(Options & SCALEDATA))
+        flags |= uldaq::AINSCAN_FF_NOSCALEDATA;
+
+    if (Options & EXTTRIGGER)
+        options |= uldaq::SO_EXTTRIGGER;
+    if (Options & EXTCLOCK)
+        options |= uldaq::SO_EXTCLOCK;
+    if (Options & CONTINUOUS)
+        options |= uldaq::SO_CONTINUOUS;
+    if (Options & RETRIGMODE)
+        options |= uldaq::SO_RETRIGGER;
+    if (Options & BURSTMODE)
+        options |= uldaq::SO_BURSTMODE;
+
+    status = ulAInScan(BoardNum, LowChan, HighChan,
+            uldaq::AI_DIFFERENTIAL, cbw_uldaq_range(Gain), Count, &rate,
+            uldaq::ScanOption(options), uldaq::AInScanFlag(flags),
+            (double *)MemHandle);
+
+    *Rate = rate;
+
+    return status;
 }
 
 int cbALoadQueue(int BoardNum, short *ChanArray, short *GainArray, int NumChans)
 {
-    return uldaq::ERR_NO_ERROR;
+    uldaq::AiQueueElement *queue = (uldaq::AiQueueElement*)calloc(NumChans, sizeof(uldaq::AiQueueElement));
+    for (int i=0; i<NumChans; i++) {
+        queue[i].inputMode = uldaq::AI_DIFFERENTIAL;
+        queue[i].channel = ChanArray[i];
+        queue[i].range = cbw_uldaq_range(GainArray[i]);
+    }
+
+    return ulAInLoadQueue(BoardNum, queue, NumChans);
 }
 
 int cbAOut(int BoardNum, int Chan, int Gain, USHORT DataValue)
 {
-    return uldaq::ERR_NO_ERROR;
+    uldaq::AOutFlag flags = uldaq::AOutFlag(uldaq::AIN_FF_NOSCALEDATA|uldaq::AIN_FF_NOCALIBRATEDATA);
+    return ulAOut(BoardNum, Chan,
+            cbw_uldaq_range(Gain),
+            flags, DataValue);
 }
 
 int cbAOutScan(int BoardNum, int LowChan, int HighChan,
                long Count, long *Rate, int Gain,
                HGLOBAL MemHandle, int Options)
 {
-    return uldaq::ERR_NO_ERROR;
+    uldaq::UlError status = uldaq::ERR_NO_ERROR;
+    ULONG flags = uldaq::AINSCAN_FF_NOCALIBRATEDATA|uldaq::AINSCAN_FF_NOSCALEDATA;
+    ULONG options = 0;
+    double rate = 0;
+    double *data = (double *)calloc(Count*(HighChan-LowChan+1), sizeof(double));
+
+    // Copy out data
+    for(int i=0; i<Count*(HighChan-LowChan+1); i++) {
+        data[i] = ((USHORT *)MemHandle)[i];
+    }
+
+    if (Options & EXTTRIGGER)
+        options |= uldaq::SO_EXTTRIGGER;
+    if (Options & EXTCLOCK)
+        options |= uldaq::SO_EXTCLOCK;
+    if (Options & CONTINUOUS)
+        options |= uldaq::SO_CONTINUOUS;
+    if (Options & RETRIGMODE)
+        options |= uldaq::SO_RETRIGGER;
+
+    status = ulAOutScan(BoardNum, LowChan, HighChan,
+            cbw_uldaq_range(Gain), Count, &rate,
+            uldaq::ScanOption(options), uldaq::AOutScanFlag(flags),
+            data);
+
+    *Rate = rate;
+    free(data);
+    return status;
 }
 
 
