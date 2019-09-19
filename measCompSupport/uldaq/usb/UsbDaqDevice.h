@@ -134,7 +134,9 @@ private:
 	virtual void establishConnection();
 	virtual void initilizeHardware() const {};
 	void releaseUsbResources();
+#ifdef LIBUSB_API_VERSION
 	static int hotplugCallback(struct libusb_context* ctx, struct libusb_device* dev, libusb_hotplug_event event, void *user_data);
+#endif
 	static void registerHotplugCallBack();
 	static void startEventHandlerThread();
 	static void* eventHandlerThread(void* arg);
@@ -147,7 +149,9 @@ private:
 	std::vector<libusb_endpoint_descriptor> mBulkOutEndpointDescs;
 
 	static libusb_context* mLibUsbContext;
+#ifdef LIBUSB_API_VERSION
 	static libusb_hotplug_callback_handle mHotplugHandle;
+#endif
 	static pthread_t mUsbEventHandlerThread;
 	static pid_t mUsbEventHandlerThreadId;
 	static int mUsbEventHandlerThreadNiceValue;

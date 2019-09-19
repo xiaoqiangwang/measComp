@@ -15,15 +15,17 @@
 #include "UsbScanTransferOut.h"
 #include "UsbDtDevice.h"
 
-#if LIBUSBX_API_VERSION < 0x01000102
-#error libusb version 1.0.16 or later is required to compile this package.
-#endif
+//#if LIBUSBX_API_VERSION < 0x01000102
+//#error libusb version 1.0.16 or later is required to compile this package.
+//#endif
 
 namespace ul
 {
 
 libusb_context* UsbDaqDevice::mLibUsbContext = NULL;
+#ifdef LIBUSB_API_VERSION
 libusb_hotplug_callback_handle UsbDaqDevice::mHotplugHandle;
+#endif
 pthread_t UsbDaqDevice::mUsbEventHandlerThread;
 
 
@@ -862,7 +864,7 @@ int UsbDaqDevice::getScanDoneBitMask() const
 void UsbDaqDevice::registerHotplugCallBack()
 {
 	FnLog log("UsbDaqDevice::registerHotplugCallBack");
-
+#ifdef LIBUSB_API_VERSION
 	if(libusb_has_capability(LIBUSB_CAP_HAS_HOTPLUG))
 	{
 		int status = libusb_hotplug_register_callback(NULL, (libusb_hotplug_event) (LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED | LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT),
@@ -871,9 +873,9 @@ void UsbDaqDevice::registerHotplugCallBack()
 		if (status != LIBUSB_SUCCESS)
 			UL_LOG("#### Error creating a hotplug callback");
 	}
-
+#endif
 }
-
+#ifdef LIBUSB_API_VERSION
 int UsbDaqDevice::hotplugCallback(struct libusb_context *ctx, struct libusb_device *dev, libusb_hotplug_event event, void *user_data)
 {
 	FnLog log("UsbDaqDevice::hotplugCallback");
@@ -901,7 +903,7 @@ int UsbDaqDevice::hotplugCallback(struct libusb_context *ctx, struct libusb_devi
 
 	return 0;
 }
-
+#endif
 void UsbDaqDevice::startEventHandlerThread()
 {
 	FnLog log("UsbDaqDevice::startEventHandlerThread");
@@ -984,11 +986,12 @@ void UsbDaqDevice::terminateEventThread()
 
 	mTerminateUsbEventThread = true;
 
+#ifdef LIBUSB_API_VERSION
 	if(libusb_has_capability(LIBUSB_CAP_HAS_HOTPLUG))
 	{
 		libusb_hotplug_deregister_callback(mLibUsbContext, mHotplugHandle); // This wakes up libusb_handle_events()
 	}
-
+#endif
 	UL_LOG("waiting for event handler thread to complete....");
 
 	if(mUsbEventHandlerThread)
