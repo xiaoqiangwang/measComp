@@ -17,7 +17,11 @@ else
 LIBRARY_IOC = uldaq
 ULDAQ = $(TOP)/measCompSupport/uldaq
 
+INC += cbw_linux.h
+uldaq_SRCS += cbw_linux.cpp
+
 SRC_DIRS += ${ULDAQ}
+INC += uldaq.h
 uldaq_SRCS += AiDevice.cpp
 uldaq_SRCS += IoDevice.cpp
 uldaq_SRCS += DevMemInfo.cpp
@@ -87,6 +91,11 @@ uldaq_SRCS += DaqIUsb1808.cpp
 SRC_DIRS += ${ULDAQ}/usb/fw
 uldaq_SRCS += DtFx2FwLoader.cpp
 uldaq_SRCS += Fx2FwLoader.cpp
+uldaq_SRCS += DT9837A_FW.c
+uldaq_SRCS += USBQuad06Fpga.c
+uldaq_SRCS += DTFX2LDR_FW.c
+uldaq_SRCS += FX2LDR_FW.c
+uldaq_SRCS += PDAQ3K_FW.c
 
 SRC_DIRS += ${ULDAQ}/usb/daqo
 uldaq_SRCS += DaqOUsb1808.cpp
