@@ -1031,10 +1031,13 @@ typedef enum
 }ScanStatus;
 
 #ifndef doxy_skip
-#define NOSCALEDATA 		1 << 0
-#define NOCALIBRATEDATA 	1 << 1
-#define SIMULTANEOUS		1 << 2
-#define NOCLEAR				1 << 3
+typedef enum
+{
+    NOSCALEDATA 	= 1 << 0,
+    NOCALIBRATEDATA 	= 1 << 1,
+    SIMULTANEOUS	= 1 << 2,
+    NOCLEAR		= 1 << 3
+} CompactConst;
 #endif /*doxy_skip */
 
 /** Used with many analog input and output functions, as well as a return value for the \p infoValue argument
@@ -1088,10 +1091,10 @@ typedef enum
 	AINSCAN_FF_DEFAULT 				= 0,
 
 	/** Data is returned in native format, without scaling applied. */
-	AINSCAN_FF_NOSCALEDATA 			= NOSCALEDATA, 		
+	AINSCAN_FF_NOSCALEDATA 			= 1 << 0, 		
 
 	/** Data is returned without calibration factors applied. */
-	AINSCAN_FF_NOCALIBRATEDATA 		= NOCALIBRATEDATA 	
+	AINSCAN_FF_NOCALIBRATEDATA 		= 1 << 1 	
 }AInScanFlag;
 
 /** Use as the \p flags argument value for ulAIn() to set the properties of data returned. */
@@ -1101,10 +1104,10 @@ typedef enum
 	AIN_FF_DEFAULT = 0,
 
 	/** Data is returned in native format, without scaling applied. */
-	AIN_FF_NOSCALEDATA 			= NOSCALEDATA, 		
+	AIN_FF_NOSCALEDATA 			= 1 << 0, 		
 
 	/** Data is returned without calibration factors applied. */
-	AIN_FF_NOCALIBRATEDATA 		= NOCALIBRATEDATA 	
+	AIN_FF_NOCALIBRATEDATA 		= 1 << 1 	
 }AInFlag;
 
 /** Use as the \p flags argument value for ulAOutScan() to set the properties of data supplied to the function. */
@@ -1114,10 +1117,10 @@ typedef enum
 	AOUTSCAN_FF_DEFAULT					= 0,
 
 	/** Data is supplied in native format (usually, values ranging from 0 to 2<sup>resolution</sup> - 1. */
-	AOUTSCAN_FF_NOSCALEDATA 			= NOSCALEDATA, 		
+	AOUTSCAN_FF_NOSCALEDATA 			= 1 << 0, 		
 
 	/** Data is output without calibration factors applied. */
-	AOUTSCAN_FF_NOCALIBRATEDATA 		= NOCALIBRATEDATA 	
+	AOUTSCAN_FF_NOCALIBRATEDATA 		= 1 << 1	
 }AOutScanFlag;
 
 /** Use as the \p flags argument value for ulTIn() to set the properties of data returned; reserved for future use. */
@@ -1141,10 +1144,10 @@ typedef enum
 	AOUT_FF_DEFAULT	= 0,
 
 	/** Data is supplied in native format (usually, values ranging from 0 to 2<sup>resolution</sup> - 1). */
-	AOUT_FF_NOSCALEDATA 			= NOSCALEDATA, 		
+	AOUT_FF_NOSCALEDATA 			= 1 << 0, 		
 
 	/** Data is output without calibration factors applied. */
-	AOUT_FF_NOCALIBRATEDATA 		= NOCALIBRATEDATA 	
+	AOUT_FF_NOCALIBRATEDATA 		= 1 << 1	
 }AOutFlag;
 
 /** Use as the \p flags argument value for ulAOutArray() to set the properties of data supplied to the function. */
@@ -1154,13 +1157,13 @@ typedef enum
 	AOUTARRAY_FF_DEFAULT	= 0,
 
 	/** Data is supplied in native format (usually, values ranging from 0 to 2<sup>resolution</sup> - 1). */
-	AOUTARRAY_FF_NOSCALEDATA 			= NOSCALEDATA,
+	AOUTARRAY_FF_NOSCALEDATA 			= 1 << 0,
 
 	/** Data is output without calibration factors applied. */
-	AOUTARRAY_FF_NOCALIBRATEDATA 		= NOCALIBRATEDATA ,
+	AOUTARRAY_FF_NOCALIBRATEDATA 		= 1 << 1,
 
 	/** All of the specified channels will be updated simultaneously. */
-	AOUTARRAY_FF_SIMULTANEOUS			= SIMULTANEOUS
+	AOUTARRAY_FF_SIMULTANEOUS			= 1 << 2
 }AOutArrayFlag;
 
 /** Use with #AoConfigItem to set configuration options at runtime. */
@@ -1189,7 +1192,7 @@ typedef enum
 	CINSCAN_FF_CTR64_BIT 		= 1 << 2,
 
 	/** Does not clear the counter to 0 at the start of each scan. */
-	CINSCAN_FF_NOCLEAR			= NOCLEAR,
+	CINSCAN_FF_NOCLEAR		= 1 << 3,
 
 	/** Sets up the counter as a 48-bit counter channel */
 	CINSCAN_FF_CTR48_BIT 		= 1 << 4
@@ -1216,13 +1219,13 @@ typedef enum
 	DAQINSCAN_FF_DEFAULT			= 0,
 
 	/** Data for analog channels is returned in native format, without scaling applied. */
-	DAQINSCAN_FF_NOSCALEDATA 		= NOSCALEDATA, 		
+	DAQINSCAN_FF_NOSCALEDATA 		= 1 << 0, 		
 
 	/** Data for analog channels is returned without calibration factors applied. */
-	DAQINSCAN_FF_NOCALIBRATEDATA 	= NOCALIBRATEDATA, 	
+	DAQINSCAN_FF_NOCALIBRATEDATA 	= 1 << 1, 	
 
 	/** Counters are not cleared (set to 0) when a scan starts. */
-	DAQINSCAN_FF_NOCLEAR			= NOCLEAR			
+	DAQINSCAN_FF_NOCLEAR			= 1 << 3
 }DaqInScanFlag;
 
 /** Use as the \p flags argument value for ulDaqOutScan() to set the properties of data sent. */
@@ -1232,10 +1235,10 @@ typedef enum
 	DAQOUTSCAN_FF_DEFAULT			= 0,
 
 	/** Data for analog channels is in native format, without scaling applied. */
-	DAQOUTSCAN_FF_NOSCALEDATA 		= NOSCALEDATA, 		
+	DAQOUTSCAN_FF_NOSCALEDATA 		= 1 << 0, 		
 
 	/** Data for analog channels is output without calibration factors applied. */
-	DAQOUTSCAN_FF_NOCALIBRATEDATA 	= NOCALIBRATEDATA 	
+	DAQOUTSCAN_FF_NOCALIBRATEDATA 	= 1 << 1	
 }DaqOutScanFlag;
 
 /** Use as the value for the \p type argument for ulCConfigScan(). Use ulCtrGetInfo() with the ::CTR_INFO_MEASUREMENT_TYPES \p infoItem
