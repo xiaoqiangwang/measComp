@@ -42,8 +42,7 @@ measCompApp_SRCS += measCompAppMain.cpp
 
 # Link in the code from the support library
 measCompApp_LIBS += measComp
-measCompApp_LIBS_Linux += cbw_linux
-measCompApp_LIBS_Linux += measCompLinuxDrivers
+measCompApp_LIBS_Linux += uldaq
 measCompApp_LIBS += std
 measCompApp_LIBS += busy
 measCompApp_LIBS += calc
@@ -59,7 +58,7 @@ else ifeq (windows-x64, $(findstring windows-x64, $(T_A)))
   measComp_LIBS += cbw64
   measCompApp_LIBS += cbw64
 endif
-measCompApp_SYS_LIBS_Linux += hidapi-libusb usb-1.0
+measCompApp_SYS_LIBS_Linux += usb-1.0
 # Finally link to the EPICS Base libraries
 measCompApp_LIBS += $(EPICS_BASE_IOC_LIBS)
 
@@ -80,8 +79,8 @@ testTC32_LIBS += cbw64
 endif
 
 PROD_IOC += testFreqDiv
-testFreqDiv_LIBS_Linux += cbw_linux
-testFreqDiv_LIBS_Linux += measCompLinuxDrivers
+testFreqDiv_LIBS_Linux += uldaq
+#testFreqDiv_LIBS_Linux += measCompLinuxDrivers
 testFreqDiv_LIBS += asyn
 testFreqDiv_SRCS += testFreqDiv.cpp
 ifeq (win32-x86, $(findstring win32-x86, $(T_A)))
@@ -89,7 +88,7 @@ testFreqDiv_LIBS += cbw32
 else ifeq (windows-x64, $(findstring windows-x64, $(T_A)))
 testFreqDiv_LIBS += cbw64
 endif
-testFreqDiv_SYS_LIBS_Linux += hidapi-libusb usb-1.0
+testFreqDiv_SYS_LIBS_Linux += usb-1.0
 # Finally link to the EPICS Base libraries
 testFreqDiv_LIBS += $(EPICS_BASE_IOC_LIBS)
 
